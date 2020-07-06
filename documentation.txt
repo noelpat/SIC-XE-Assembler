@@ -1,0 +1,103 @@
+i. Purpose of the project (What, why and how?)
+
+The purpose of this project is to implement pass 1 and pass 2 of the assembler. The program
+starts off by reading the SICOPS.txt file and stores each line into a new Hash Table called
+'SICKHash'. Then it scans the input file and counts how many lines are in it. It uses this line 
+count to create a second hash table of the appropiate size. Then the program opens the file again
+reading it line by line and splits each line by spaces into a string array. 
+
+After that it passes each line to a method in the helper class that determines if the line has a label
+or not by checking the first 8 characters to see if they are blank or if the first character is a tab. 
+It then uses the SICOPS hash table to pull the format value of the SICOP and add the appropiate number 
+to the current location address. Also if it sees a Label infront of a valid instruction (or an 
+exception like WORD/RESW) it will store this label with it's location into a Hash table called 
+'LabelHash'. If it see's LTORG it will jump to a method designed to calculate the address for every 
+literal seen so far and store those literals into the Label Table. It will also print error messages 
+for invalid instructions or lack of a START location etc. 
+
+After it is done reading a line it will store this line into a Symbol object and add it to an array list 
+of symbol objects called 'output' to be used in pass 2. After finishing pass 1 the program will pass the 
+array list of objects 'output' (and other necessary variables like the table's of SICOPS and Labels) to a 
+method that does pass 2 and creates the object code. It will iterate through the array list 'output' and 
+calculate the object code for every line that does not throw an error. The object code will be stored 
+into an array list of strings for creating the .obj file at the end of the program. After the program 
+finishes pass 2 it will create the output files in the same directory that the program was executed in. 
+
+Output is sent to a *.lst file and a *.obj file where * is the name of the user input file. The *.lst 
+file will show the line numbers, addresses, and the object code next to each line of the original input 
+file. The *.obj file will show the object codes and include exclamation marks '!' when it sees a RESW 
+or RESB. The next object code after exclamation marks in the *.obj should be the next address in the 
+program.
+
+Extra credit:
+
+This program should still calculate the right object code and addresses when it see's the following features:
+
+-EQU
+-LTORG
+-Literals
+-USE blocks
+-Arithmetic inside WORD storage will work with addition or subtraction.
+-This will also work with adding or subtracting labels within a word.
+-A WORD can also reference a label and it's object code will become the location of that label.
+-If a WORD references a label in the operand column that is in a different USE block, it will get the
+absolute location of the label rather than it's location within the specific USE block.
+
+Error messages will be printed in the following situations:
+
+-If the START statement is not found
+-If the END statement is not found
+-If a duplicate label is found
+-If an invalid mneumonic is found
+-If an uneven amount of digits is found in a Hex literal such as =X'A'
+-If it see's non-hex characters in a Hex literal such as =X'GG'
+-If a close quote is missing in a literal or a BYTE.
+-If a BYTE has NO quotes or if BYTE refers to an invalid literal with missing quotes etc.
+-If the operand space is invalid or blank when it shouldn't be (NOT RSUB or *RSUB)
+-If an invalid register or quantity is used with SHIFTR or SHIFTL
+-If an invalid register is used in any register to register instruction.
+-If indexing is used with indirect or imemdiate addressing.
+-If indexing is used without the X register.
+
+ii. Source file(s)
+
+project4.java
+Symbol.java
+SicOpTable.java
+SicOp.java
+Register.java
+Pass1.java
+Pass2.java
+LabelTable.java
+Helpers.java
+Displacement.java
+objMath.java
+useBlock.java
+
+SICOPS.txt
+
+SICOPS.txt is required to be the same directory as the program 
+for the program to work.
+
+iii. Input files(s)
+
+f1.txt
+Testfile.txt
+Testfile2.txt
+Testfile3.txt
+Testlit.txt
+Testuse.txt
+
+iv. Output  file(s)
+
+Output is sent to a *.lst file and a *.obj file where * is the name of the user input file.
+The output files will be created in the same directory that the program was executed in.
+
+v. Instructions to execute the project.
+
+-Run the make file now inside the current directory . The linux command to run a make file is "make".
+-Execute the java file at the commmand line by typing "java project4 f1.txt".
+-In the end the commands at a linux terminal should look something like this:
+	unzip project4.zip
+	make
+	java project4 f1.txt 
